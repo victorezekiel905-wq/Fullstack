@@ -1,13 +1,22 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  Index,
+} from 'typeorm';
 
 @Entity('result_snapshots')
-@Index(['studentId', 'termId', 'sessionId'])
+@Index(['studentId', 'classId', 'termId', 'sessionId'])
 export class ResultSnapshot {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   studentId: string;
+
+  @Column()
+  classId: string;
 
   @Column()
   termId: string;
@@ -25,10 +34,10 @@ export class ResultSnapshot {
   averageScore: number;
 
   @Column({ nullable: true })
-  grade: string;
+  grade?: string;
 
   @Column({ type: 'int', nullable: true })
-  position: number;
+  position?: number;
 
   @Column({ default: false })
   isPublished: boolean;
