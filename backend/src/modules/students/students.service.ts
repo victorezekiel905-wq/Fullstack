@@ -163,8 +163,8 @@ export class StudentsService {
 
   async bulkImport(file: Express.Multer.File, tenantId: string): Promise<{ success: number; failed: number; errors: any[] }> {
     const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.load(file.buffer);
-
+    await workbook.xlsx.load(file.buffer as any);
+    
     const worksheet = workbook.getWorksheet(1);
     const results = {
       success: 0,
@@ -248,7 +248,7 @@ export class StudentsService {
       parent_phone: '+2348012345678',
     });
 
-    return await workbook.xlsx.writeBuffer() as Buffer;
+    return Buffer.from(await workbook.xlsx.writeBuffer() as any);
   }
 
   private async generateAdmissionNumber(tenantId: string): Promise<string> {
