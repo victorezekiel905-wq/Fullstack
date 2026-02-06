@@ -4,7 +4,7 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { Tenant } from '../auth/decorators/tenant.decorator';
+import { TenantId } from '../auth/decorators/tenant.decorator';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -29,7 +29,7 @@ export class UsersController {
   @Roles('ADMIN', 'SUPER_ADMIN')
   async create(
     @Body() data: any,
-    @Tenant() tenantId: string,
+    @TenantId() tenantId: string,
   ) {
     return this.usersService.create({ ...data, tenantId });
   }
