@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  Index,
+} from 'typeorm';
 
 @Entity('term_results')
 @Index(['studentId', 'termId', 'sessionId'])
@@ -24,20 +30,37 @@ export class TermResult {
   @Column('decimal', { precision: 5, scale: 2 })
   totalScore: number;
 
+  /** Computed academic average */
   @Column('decimal', { precision: 5, scale: 2 })
   average: number;
 
-  @Column({ nullable: true })
-  grade: string;
+  /** Explicit computed average used by services */
+  @Column('decimal', { precision: 5, scale: 2, nullable: true })
+  averageScore?: number;
 
   @Column({ type: 'int', nullable: true })
-  position: number;
-
-  @Column({ type: 'int', nullable: true })
-  totalStudents: number;
+  totalSubjects?: number;
 
   @Column({ nullable: true })
-  remarks: string;
+  grade?: string;
+
+  @Column({ type: 'int', nullable: true })
+  position?: number;
+
+  @Column({ type: 'int', nullable: true })
+  totalStudents?: number;
+
+  @Column({ nullable: true })
+  remarks?: string;
+
+  @Column({ nullable: true })
+  teacherRemark?: string;
+
+  @Column({ nullable: true })
+  promotionStatus?: string;
+
+  @Column({ type: 'timestamp', nullable: true })
+  computedAt?: Date;
 
   @Column({ default: 'DRAFT' })
   status: string;
@@ -45,8 +68,8 @@ export class TermResult {
   @Column({ default: false })
   isPublished: boolean;
 
-  @Column({ nullable: true })
-  publishedAt: Date;
+  @Column({ type: 'timestamp', nullable: true })
+  publishedAt?: Date;
 
   @CreateDateColumn()
   createdAt: Date;
