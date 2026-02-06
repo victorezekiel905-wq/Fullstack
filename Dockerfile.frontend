@@ -1,0 +1,56 @@
+# ============================================
+# RENDER FREE TIER - FRONTEND DOCKERFILE
+# ============================================
+# Serves static React build with Nginx
+# Optimized for 512 MB RAM limit
+# ============================================
+
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY frontend/package*.json ./
+
+# Install dependencies
+RUN npm ci --legacy-peer-deps --no-audit --no-fund || \
+    npm install --legacy-peer-deps --no-audit --no-fund
+
+# Copy frontend source
+COPY frontend/ .
+
+# Build React app
+RUN npm run build
+
+# ============================================
+# PRODUCTION STAGE with Nginx
+# ============================================
+FROM nginx:alpine
+
+# Copy custom nginx config
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf 2>/dev/null || \
+  echo 'server { \
+    listen 3000; \
+    root /usr/share/nginx/html; \
+    index index.html; \
+    location / { \
+      try_files $uri $uri/ /index.html; \
+    } \
+    location /api { \
+      proxy_pass ${VITE_API_BASE_URL}; \
+      proxy_http_version 1.1; \
+      proxy_set_header Upgrade $http_upgrade; \
+      proxy_set_header Connection "upgrade"; \
+      proxy_set_header Host $host; \
+      proxy_cache_bypass $http_upgrade; \
+    } \
+  }' > /etc/nginx/conf.d/default.conf
+
+# Copy built app from builder
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Expose port 3000 (Render requirement)
+EXPOSE 3000
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

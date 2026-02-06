@@ -1,0 +1,23 @@
+{
+  "name": "SynergySwift",
+  "version": "1.0.0",
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "staticPublishPath": "./frontend/dist",
+  "routes": [
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "VITE_API_BASE_URL": "https://your-backend-url.com/api/v1",
+    "VITE_TENANT_SUBDOMAIN": "demo"
+  }
+}
